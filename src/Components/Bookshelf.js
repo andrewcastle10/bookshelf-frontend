@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import BookItem from './BookItem';
 
 export default function Bookshelf(){
 
-    const [fetchLink, setFetchLink] = useState('/test')
-    const [data, setData] = useState('')
+    const [books, setBooks] = useState([])
     const [search, setSearch] = useState('');
 
 
@@ -14,28 +14,19 @@ export default function Bookshelf(){
         fetch("/search", {
           method: "POST",
           headers: {
-            'Content-Type' : 'application/json'
+            'Content-Type' : 'application/json',
+            'Accept': 'application/json'
           },
           body: JSON.stringify([search])
         })
         .then(response => response.json())
         .then(data => {
-          console.log(data);
+            // console.log(data);
+            setBooks(data);
+            console.log(books);
         });
 
       }
-    
-    useEffect(() => {
-        console.log(fetchLink);
-        fetch(fetchLink).then(response=>
-          response.json().then(res => {
-            console.log(res);
-            setData(res[0]);
-          })
-    
-        );
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [fetchLink]);
 
     // Handling the name change
     const handleSearch = (e) => {
@@ -57,8 +48,18 @@ export default function Bookshelf(){
             <Button variant="contained" onClick={handleSubmit} >Submit</Button>
             <h1> This is a component! </h1>
 
-            <h2> {data} </h2>
+            <ul>
+            {books.map((book, id) => {
+                console.log(book.title);
+                return (
+                    <BookItem book={book} key={id}/>
+                )
+            })}
+            </ul>
 
+            <h2> TEST </h2>
+            
+ 
         </div>
 
     )
